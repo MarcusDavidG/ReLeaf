@@ -3,18 +3,17 @@
 
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const JAN_1ST_2030 = 1893456000;
-const ONE_GWEI: bigint = 1_000_000_000n;
+const ReLeafModule = buildModule("ReLeafModule", (m) => {
+  // Deploy B3TR token
+  const b3tr = m.contract("B3TR", [m.getAccount(0)]);
 
-const LockModule = buildModule("LockModule", (m) => {
-  const unlockTime = m.getParameter("unlockTime", JAN_1ST_2030);
-  const lockedAmount = m.getParameter("lockedAmount", ONE_GWEI);
+  // Deploy DigitalTwin with B3TR address
+  const digitalTwin = m.contract("DigitalTwin", [b3tr]);
 
-  const lock = m.contract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  // Deploy ChallengeManager with DigitalTwin and B3TR addresses
+  const challengeManager = m.contract("ChallengeManager", [digitalTwin, b3tr]);
 
-  return { lock };
+  return { b3tr, digitalTwin, challengeManager };
 });
 
-export default LockModule;
+export default ReLeafModule;

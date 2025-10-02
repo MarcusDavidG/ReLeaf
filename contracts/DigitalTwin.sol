@@ -39,7 +39,7 @@ contract DigitalTwin is ERC721URIStorage, AccessControl {
     ERC20 public b3trToken;
     uint256 public rewardAmount;
 
-    constructor(address _b3trTokenAddress) ERC721("ReLoop Digital Twin", "RELOOP") {
+    constructor(address _b3trTokenAddress) ERC721("ReLeaf Digital Twin", "RELEAF") {
         _tokenIdCounter = 0;
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(BRAND_ROLE, msg.sender); // The deployer is a brand by default
@@ -142,6 +142,16 @@ contract DigitalTwin is ERC721URIStorage, AccessControl {
      */
     function getHistory(uint256 tokenId) public view returns (ProductHistory[] memory) {
         return historyLog[tokenId];
+    }
+
+    /**
+     * @dev Updates the token URI for IPFS metadata.
+     * Only callable by accounts with the BRAND_ROLE.
+     * @param tokenId The ID of the token.
+     * @param uri The new metadata URI.
+     */
+    function updateTokenURI(uint256 tokenId, string memory uri) public onlyRole(BRAND_ROLE) {
+        _setTokenURI(tokenId, uri);
     }
 
     /**

@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+ import { ethers } from "hardhat";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -17,6 +17,13 @@ async function main() {
   await digitalTwin.waitForDeployment();
   const digitalTwinAddress = await digitalTwin.getAddress();
   console.log("DigitalTwin deployed to:", digitalTwinAddress);
+
+  // Deploy ChallengeManager with B3TR and DigitalTwin addresses
+  const ChallengeManager = await ethers.getContractFactory("ChallengeManager");
+  const challengeManager = await ChallengeManager.deploy(b3trAddress, digitalTwinAddress);
+  await challengeManager.waitForDeployment();
+  const challengeManagerAddress = await challengeManager.getAddress();
+  console.log("ChallengeManager deployed to:", challengeManagerAddress);
 }
 
 main().catch((error) => {
